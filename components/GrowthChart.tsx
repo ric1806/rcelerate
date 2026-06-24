@@ -2,31 +2,40 @@
 
 import { motion } from 'framer-motion'
 
-// Line ends at (138, 26) — the base of the arrowhead
-const LINE = 'M 16 74 C 40 66, 65 54, 90 42 S 120 30, 138 26'
+/*
+  Verificación de dirección:
+  - PATH usa bezier S con CP2=(134,22) → endpoint=(134,18)
+  - Tangente en el endpoint: (134-134, 18-22) = (0, -4) → apunta recto ARRIBA ↑
+  - TRIANGLE base en y=18 (= endpoint del path) y tip en y=2 → también apunta ARRIBA ↑
+  - Dirección coincide ✓
+*/
 
-// Solid filled triangle pointing straight UP
-// tip=(138,7)  base-left=(127,26)  base-right=(149,26)
-const ARROW = '127,26 138,7 149,26'
+// Curva suave que en su tramo final sube recto (vertical) hacia el triángulo
+const LINE = 'M 12 74 C 50 66, 92 50, 118 36 S 134 22, 134 18'
 
-const D = 3.2
+// Triángulo sólido apuntando hacia arriba: base en y=18 (donde termina LINE), punta en y=2
+// 24px de ancho × 16px de alto — proporciones de flecha clásica
+const ARROW = '122,18 134,2 146,18'
+
+const D = 3.2 // duración del bucle en segundos
 
 export function GrowthChart() {
   return (
     <svg
-      viewBox="0 0 165 84"
+      viewBox="0 0 160 82"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className="w-full max-w-[220px]"
       aria-hidden="true"
     >
-      {/* Subtle grid */}
-      {[16, 34, 52, 70].map((y) => (
-        <line key={y} x1="14" y1={y} x2="153" y2={y} stroke="#1e1e1e" strokeWidth="0.7" />
+      {/* Grid sutil */}
+      {[20, 38, 56, 74].map((y) => (
+        <line key={y} x1="10" y1={y} x2="154" y2={y} stroke="#1e1e1e" strokeWidth="0.7" />
       ))}
-      <line x1="14" y1="78" x2="153" y2="78" stroke="#2a2a2a" strokeWidth="1" />
+      {/* Baseline */}
+      <line x1="10" y1="78" x2="154" y2="78" stroke="#2a2a2a" strokeWidth="1" />
 
-      {/* Rising line — draws itself then fades */}
+      {/* Línea que se dibuja sola y luego desaparece — bucle infinito */}
       <motion.path
         d={LINE}
         stroke="#ff4d00"
@@ -35,8 +44,8 @@ export function GrowthChart() {
         fill="none"
         initial={{ pathLength: 0, opacity: 1 }}
         animate={{
-          pathLength: [0,   1,    1,    1],
-          opacity:    [1,   1,    1,    0],
+          pathLength: [0,    1,    1,    1],
+          opacity:    [1,    1,    1,    0],
         }}
         transition={{
           duration: D,
@@ -46,7 +55,7 @@ export function GrowthChart() {
         }}
       />
 
-      {/* Filled solid triangle — clearly reads as arrowhead */}
+      {/* Triángulo sólido — aparece cuando la línea llega arriba */}
       <motion.polygon
         points={ARROW}
         fill="#ff4d00"
