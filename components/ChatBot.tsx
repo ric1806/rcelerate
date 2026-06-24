@@ -15,23 +15,14 @@ const GREETING: Message = {
 
 export function ChatBot() {
   const [open, setOpen] = useState(false)
-  const [hint, setHint] = useState(false)
   const [messages, setMessages] = useState<Message[]>([GREETING])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Muestra el globo de "¿Tienes dudas?" 3 s después de cargar, desaparece a los 8 s
-  useEffect(() => {
-    const show = setTimeout(() => setHint(true), 3000)
-    const hide = setTimeout(() => setHint(false), 8000)
-    return () => { clearTimeout(show); clearTimeout(hide) }
-  }, [])
-
   useEffect(() => {
     if (open) {
-      setHint(false)
       bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
       inputRef.current?.focus()
     }
@@ -132,23 +123,16 @@ export function ChatBot() {
         </div>
       )}
 
-      {/* Globo "¿Tienes dudas?" — aparece 3 s después, desaparece a los 8 s */}
-      {hint && !open && (
+      {/* Globo permanente "¿Tienes dudas?" — visible mientras el chat está cerrado */}
+      {!open && (
         <div
-          className="fixed bottom-[72px] right-4 z-50 flex items-center gap-2 bg-white text-[#111] text-[13px] font-medium px-4 py-2 rounded-2xl rounded-br-sm shadow-lg"
+          className="fixed bottom-[88px] right-4 z-50 flex items-center gap-2 bg-white text-[#111] text-[14px] font-medium px-5 py-3 rounded-2xl rounded-br-sm shadow-lg max-w-[220px]"
           style={{
             animation: 'fadeSlideIn 0.3s ease',
             boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
           }}
         >
-          <span>¿Tienes alguna duda? ¡Pregúntame!</span>
-          <button
-            onClick={() => setHint(false)}
-            className="text-[#aaa] hover:text-[#555] ml-1"
-            aria-label="Cerrar"
-          >
-            <X size={12} />
-          </button>
+          <span>¿Tienes alguna duda? ¡Pregúntame! 💬</span>
         </div>
       )}
 
@@ -156,10 +140,10 @@ export function ChatBot() {
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label="Abrir chat"
-        className="fixed bottom-4 right-4 z-50 w-12 h-12 rounded-full bg-green-600 shadow-lg flex items-center justify-center hover:bg-green-700 transition-colors"
-        style={{ boxShadow: '0 0 20px rgba(22,163,74,0.4)' }}
+        className="fixed bottom-4 right-4 z-50 w-14 h-14 rounded-full bg-[#ff4d00] shadow-lg flex items-center justify-center hover:bg-[#e04400] transition-colors"
+        style={{ boxShadow: '0 0 20px rgba(255,77,0,0.4)' }}
       >
-        {open ? <X size={20} className="text-white" /> : <MessageCircle size={20} className="text-white" />}
+        {open ? <X size={24} className="text-white" /> : <MessageCircle size={24} className="text-white" />}
       </button>
 
       <style>{`
