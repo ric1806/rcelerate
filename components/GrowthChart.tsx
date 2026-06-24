@@ -2,22 +2,19 @@
 
 import { motion } from 'framer-motion'
 
-/*
-  Verificación de dirección:
-  - PATH usa bezier S con CP2=(134,22) → endpoint=(134,18)
-  - Tangente en el endpoint: (134-134, 18-22) = (0, -4) → apunta recto ARRIBA ↑
-  - TRIANGLE base en y=18 (= endpoint del path) y tip en y=2 → también apunta ARRIBA ↑
-  - Dirección coincide ✓
-*/
+// ── Construcción geométrica ────────────────────────────────────────────────
+// Dirección 45°: unit vec = (0.707, -0.707) en SVG (x↑ derecha, y↑ abajo)
+//
+// PASO 1  tip = (140, 18)
+// PASO 2  base_center = tip − dir×16 = (129, 29)
+// PASO 3  perp 90°CW = (0.707, 0.707)  →  cola_A=(135,35)  cola_B=(123,23)
+// PASO 4  CP2 línea = (115, 43)  →  (129-115, 29-43) = (14,-14) → 45° exacto ✓
+// ──────────────────────────────────────────────────────────────────────────
 
-// Curva suave que en su tramo final sube recto (vertical) hacia el triángulo
-const LINE = 'M 12 74 C 50 66, 92 50, 118 36 S 134 22, 134 18'
+const LINE  = 'M 12 74 C 40 72, 115 43, 129 29'
+const ARROW = '123,23 140,18 135,35'
 
-// Triángulo sólido apuntando hacia arriba: base en y=18 (donde termina LINE), punta en y=2
-// 24px de ancho × 16px de alto — proporciones de flecha clásica
-const ARROW = '122,18 134,2 146,18'
-
-const D = 3.2 // duración del bucle en segundos
+const D = 3.2
 
 export function GrowthChart() {
   return (
@@ -28,14 +25,13 @@ export function GrowthChart() {
       className="w-full max-w-[220px]"
       aria-hidden="true"
     >
-      {/* Grid sutil */}
+      {/* Grid */}
       {[20, 38, 56, 74].map((y) => (
         <line key={y} x1="10" y1={y} x2="154" y2={y} stroke="#1e1e1e" strokeWidth="0.7" />
       ))}
-      {/* Baseline */}
       <line x1="10" y1="78" x2="154" y2="78" stroke="#2a2a2a" strokeWidth="1" />
 
-      {/* Línea que se dibuja sola y luego desaparece — bucle infinito */}
+      {/* Línea animada */}
       <motion.path
         d={LINE}
         stroke="#ff4d00"
@@ -55,7 +51,7 @@ export function GrowthChart() {
         }}
       />
 
-      {/* Triángulo sólido — aparece cuando la línea llega arriba */}
+      {/* Triángulo a 45° — tip=(140,18)  colas=(123,23) y (135,35) */}
       <motion.polygon
         points={ARROW}
         fill="#ff4d00"
