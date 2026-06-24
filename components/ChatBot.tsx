@@ -61,7 +61,7 @@ export function ChatBot() {
       {/* Panel del chat */}
       {open && (
         <div
-          className="fixed bottom-20 right-4 z-50 w-[340px] max-w-[calc(100vw-2rem)] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-[#222]"
+          className="fixed bottom-24 right-4 z-[60] w-[340px] max-w-[calc(100vw-2rem)] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-[#222]"
           style={{ background: '#0e0e0f', maxHeight: '480px' }}
         >
           {/* Header */}
@@ -134,47 +134,49 @@ export function ChatBot() {
         </div>
       )}
 
-      {/* Globo permanente que invita a usar el chat — visible mientras está cerrado */}
-      {!open && (
-        <button
-          onClick={() => setOpen(true)}
-          aria-label="Abrir chat con Rcel"
-          className="fixed bottom-[88px] right-4 z-50 text-left bg-white rounded-2xl rounded-br-sm overflow-hidden max-w-[250px] hover:-translate-y-0.5 transition-transform"
-          style={{
-            animation: 'fadeSlideIn 0.3s ease',
-            boxShadow: '0 6px 24px rgba(0,0,0,0.16)',
-          }}
-        >
-          {/* Cabecera con identidad */}
-          <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-[#ff4d00] to-[#ff6a2a]">
-            <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-              <Bot size={14} className="text-white" />
+      {/* Controles flotantes agrupados: globo de invitación + botón (sin solaparse) */}
+      <div className="fixed bottom-4 right-4 z-[60] flex flex-col items-end gap-3">
+        {!open && (
+          <button
+            onClick={() => setOpen(true)}
+            aria-label="Abrir chat con Rcel"
+            className="text-left bg-white rounded-2xl rounded-br-sm overflow-hidden max-w-[250px] hover:-translate-y-0.5 transition-transform"
+            style={{
+              animation: 'fadeSlideIn 0.3s ease',
+              boxShadow: '0 6px 24px rgba(0,0,0,0.16)',
+            }}
+          >
+            {/* Cabecera con identidad */}
+            <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-[#ff4d00] to-[#ff6a2a]">
+              <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+                <Bot size={14} className="text-white" />
+              </div>
+              <span className="text-white text-[12px] font-bold">Rcel</span>
+              <span className="flex items-center gap-1 ml-auto text-white/90 text-[10px] font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse" />
+                IA · 24/7
+              </span>
             </div>
-            <span className="text-white text-[12px] font-bold">Rcel</span>
-            <span className="flex items-center gap-1 ml-auto text-white/90 text-[10px] font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse" />
-              IA · 24/7
-            </span>
-          </div>
-          {/* Invitación */}
-          <div className="px-3.5 py-2.5">
-            <p className="text-[#111] text-[13px] font-medium leading-snug">
-              👋 ¿Dudas sobre precios, demos o servicios? Pregúntame lo que quieras.
-            </p>
-            <p className="text-[#ff4d00] text-[12px] font-bold mt-1.5">Escríbeme aquí 💬</p>
-          </div>
-        </button>
-      )}
+            {/* Invitación */}
+            <div className="px-3.5 py-2.5">
+              <p className="text-[#111] text-[13px] font-medium leading-snug">
+                👋 ¿Dudas sobre precios, demos o servicios? Pregúntame lo que quieras.
+              </p>
+              <p className="text-[#ff4d00] text-[12px] font-bold mt-1.5">Escríbeme aquí 💬</p>
+            </div>
+          </button>
+        )}
 
-      {/* Botón flotante */}
-      <button
-        onClick={() => setOpen((v) => !v)}
-        aria-label="Abrir chat"
-        className="fixed bottom-4 right-4 z-50 w-14 h-14 rounded-full bg-[#ff4d00] shadow-lg flex items-center justify-center hover:bg-[#e04400] transition-colors"
-        style={{ boxShadow: '0 0 20px rgba(255,77,0,0.4)' }}
-      >
-        {open ? <X size={24} className="text-white" /> : <MessageCircle size={24} className="text-white" />}
-      </button>
+        {/* Botón redondo */}
+        <button
+          onClick={() => setOpen((v) => !v)}
+          aria-label={open ? 'Cerrar chat' : 'Abrir chat'}
+          className="w-14 h-14 rounded-full bg-[#ff4d00] shadow-lg flex items-center justify-center hover:bg-[#e04400] transition-colors"
+          style={{ boxShadow: '0 0 20px rgba(255,77,0,0.4)' }}
+        >
+          {open ? <X size={24} className="text-white" /> : <MessageCircle size={24} className="text-white" />}
+        </button>
+      </div>
 
       <style>{`
         @keyframes fadeSlideIn {
