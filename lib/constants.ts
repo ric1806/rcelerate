@@ -21,4 +21,5 @@ export const WA = {
   autoBasica:   `${BASE_WA}?text=Hola%2C%20me%20interesa%20la%20automatizaci%C3%B3n%20b%C3%A1sica`,
   autoMedia:    `${BASE_WA}?text=Hola%2C%20me%20interesa%20la%20automatizaci%C3%B3n%20media`,
   autoAvanzada: `${BASE_WA}?text=Hola%2C%20me%20interesa%20la%20automatizaci%C3%B3n%20avanzada`,
+  demo:         `${BASE_WA}?text=Hola%2C%20quisiera%20una%20propuesta%20de%20dise%C3%B1o%20gratuita%20para%20mi%20negocio`,
 }
