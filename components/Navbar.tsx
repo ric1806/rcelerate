@@ -24,8 +24,10 @@ export function Navbar() {
 
   return (
     <nav
-      className={`sticky top-8 z-40 bg-white flex items-center justify-between px-6 py-3 border-b border-[#f0f0f0] transition-shadow duration-200 ${
-        scrolled ? 'shadow-sm' : ''
+      className={`sticky top-8 z-40 flex items-center justify-between px-6 py-3 border-b transition-all duration-300 ${
+        scrolled
+          ? 'bg-white/90 backdrop-blur-md border-[#e8e8e8] shadow-sm'
+          : 'bg-white border-[#f0f0f0]'
       }`}
     >
       <a href="/" className="flex items-center">

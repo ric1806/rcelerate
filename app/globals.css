@@ -7,7 +7,7 @@
   --color-brand-light:  #fff8f5;
   --color-brand-border: #ffddd2;
   --color-dark:         #111111;
-  --color-darker:       #0d0d0d;
+  --color-darker:       #0a0a0a;
   --color-card:         #fafafa;
   --color-border:       #f0f0f0;
   --color-border-mid:   #dddddd;
@@ -19,12 +19,87 @@
   --color-mid:          #555555;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   background: #ffffff;
   color: #111111;
   font-family: var(--font-inter, Arial, sans-serif);
+}
+
+/* ─── Gradient text ─── */
+.gradient-text {
+  background: linear-gradient(135deg, #ff4d00 0%, #ff8040 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Scroll-triggered fade-up ─── */
+.anim {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.anim.visible { opacity: 1; transform: translateY(0); }
+.anim-d1 { transition-delay: 0.08s; }
+.anim-d2 { transition-delay: 0.18s; }
+.anim-d3 { transition-delay: 0.28s; }
+.anim-d4 { transition-delay: 0.38s; }
+
+/* ─── Card lift hover ─── */
+.card-lift {
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.card-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.09);
+}
+.card-lift-dark:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 77, 0, 0.18);
+}
+
+/* ─── Pulse badge ─── */
+@keyframes pulse-badge {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+.pulse-badge { animation: pulse-badge 2.4s ease-in-out infinite; }
+
+/* ─── Hero entrance ─── */
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-line-1 { animation: heroFadeUp 0.7s 0.1s cubic-bezier(0.22,1,0.36,1) both; }
+.hero-line-2 { animation: heroFadeUp 0.7s 0.22s cubic-bezier(0.22,1,0.36,1) both; }
+.hero-line-3 { animation: heroFadeUp 0.7s 0.34s cubic-bezier(0.22,1,0.36,1) both; }
+.hero-line-4 { animation: heroFadeUp 0.7s 0.46s cubic-bezier(0.22,1,0.36,1) both; }
+.hero-line-5 { animation: heroFadeUp 0.7s 0.58s cubic-bezier(0.22,1,0.36,1) both; }
+
+/* ─── Count-up shimmer on stat numbers ─── */
+@keyframes statPop {
+  0%   { transform: scale(0.94); opacity: 0; }
+  60%  { transform: scale(1.04); }
+  100% { transform: scale(1);    opacity: 1; }
+}
+.stat-pop { animation: statPop 0.55s cubic-bezier(0.22,1,0.36,1) both; }
+
+/* ─── Rising dot on chart ─── */
+@keyframes dotPop {
+  0%   { r: 0; opacity: 0; }
+  70%  { r: 5; }
+  100% { r: 3.5; opacity: 1; }
+}
+
+/* ─── Process connector line draw ─── */
+@keyframes lineGrow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+.connector-line {
+  transform-origin: left;
+  animation: lineGrow 1s 0.3s cubic-bezier(0.22,1,0.36,1) both;
 }
