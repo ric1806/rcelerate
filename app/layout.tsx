@@ -6,6 +6,7 @@ import { LaunchBar } from '@/components/LaunchBar'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { CookieBanner } from '@/components/CookieBanner'
+import { ChatBot } from '@/components/ChatBot'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -179,6 +180,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="flex-1">{children}</main>
         <Footer />
         <CookieBanner />
+        <ChatBot />
       </body>
       <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA4_ID ?? 'G-XXXXXXXXXX'} />
     </html>
