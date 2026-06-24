@@ -118,6 +118,10 @@ CÓMO RESPONDER
 - NO inventes servicios que no están en esta lista
 - Responde SIEMPRE en español`
 
+// Modelo principal y de respaldo (este último con más cuota disponible)
+const PRIMARY_MODEL = 'gemini-2.5-flash'
+const FALLBACK_MODEL = 'gemini-3.1-flash-lite'
+
 // Retry con backoff exponencial para errores 503 de alta demanda
 async function callWithRetry(fn: () => Promise<string>): Promise<string> {
   const waits = [1000, 2000, 4000, 8000] // 1s → 2s → 4s → 8s
@@ -146,10 +150,6 @@ export async function POST(req: NextRequest) {
     }
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-2.5-flash',
-      systemInstruction: SYSTEM_PROMPT,
-    })
 
     type HistoryEntry = { role: 'user' | 'model'; parts: { text: string }[] }
     const rawHistory: HistoryEntry[] = messages
@@ -161,12 +161,35 @@ export async function POST(req: NextRequest) {
     const firstUserIdx = rawHistory.findIndex((m: HistoryEntry) => m.role === 'user')
     const history = firstUserIdx >= 0 ? rawHistory.slice(firstUserIdx) : []
 
-    const chat = model.startChat({ history })
     const lastMessage = messages[messages.length - 1].text
 
-    const text = await callWithRetry(() =>
-      chat.sendMessage(lastMessage).then(r => r.response.text())
-    )
+    // Ejecuta un modelo concreto conservando el retry de 503
+    const runModel = (modelName: string) => {
+      const model = genAI.getGenerativeModel({
+        model: modelName,
+        systemInstruction: SYSTEM_PROMPT,
+      })
+      const chat = model.startChat({ history })
+      return callWithRetry(() => chat.sendMessage(lastMessage).then(r => r.response.text()))
+    }
+
+    // Intenta con el modelo principal; si se agota la cuota (429) cae al de respaldo
+    let text: string
+    try {
+      text = await runModel(PRIMARY_MODEL)
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err)
+      const sinCuota =
+        msg.includes('429') ||
+        msg.includes('quota') ||
+        msg.includes('RESOURCE_EXHAUSTED') ||
+        msg.includes('Too Many Requests') ||
+        msg.includes('503') ||
+        msg.includes('high demand')
+      if (!sinCuota) throw err
+      console.warn(`[chat] ${PRIMARY_MODEL} no disponible (${msg.slice(0, 80)}) → fallback ${FALLBACK_MODEL}`)
+      text = await runModel(FALLBACK_MODEL)
+    }
 
     return NextResponse.json({ text })
   } catch (err: unknown) {
