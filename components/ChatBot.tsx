@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { MessageCircle, X, Send, Loader2 } from 'lucide-react'
+import { MessageCircle, X, Send, Loader2, Bot } from 'lucide-react'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -10,7 +10,7 @@ interface Message {
 
 const GREETING: Message = {
   role: 'assistant',
-  text: '¡Hola! Soy Rcel 👋 el asistente de Rcelerate. ¿En qué te puedo ayudar hoy? Puedo contarte sobre nuestras páginas web, precios o automatizaciones con IA.',
+  text: '¡Hola! Soy Rcel 👋 tu asistente de IA disponible 24/7. ¿En qué te puedo ayudar hoy? Puedo contarte sobre nuestras páginas web, precios o automatizaciones con IA.',
 }
 
 export function ChatBot() {
@@ -65,10 +65,21 @@ export function ChatBot() {
           style={{ background: '#0e0e0f', maxHeight: '480px' }}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 bg-[#ff4d00]">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-              <span className="text-white text-[13px] font-semibold">Rcel — Asistente Rcelerate</span>
+          <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#ff4d00] to-[#ff6a2a]">
+            <div className="flex items-center gap-2.5">
+              <div className="relative">
+                <div className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center ring-1 ring-white/25">
+                  <Bot size={19} className="text-white" />
+                </div>
+                <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-[#ff4d00]" />
+              </div>
+              <div className="leading-tight">
+                <p className="text-white text-[14px] font-bold tracking-tight">Rcel</p>
+                <p className="text-white/85 text-[10.5px] flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse" />
+                  Tu asistente de IA · 24/7
+                </p>
+              </div>
             </div>
             <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white">
               <X size={16} />
