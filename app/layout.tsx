@@ -24,11 +24,12 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://rcelerate.co'),
   keywords: [
     'páginas web Colombia',
-    'diseño web Colombia',
+    'diseño web profesional Colombia',
     'automatizaciones IA Colombia',
-    'landing page Colombia',
-    'página web para negocio',
-    'crear página web barata Colombia',
+    'agencia digital Colombia',
+    'landing page profesional Colombia',
+    'página web para negocio Colombia',
+    'crear página web Barbosa Santander',
     'Rcelerate',
   ],
   authors: [{ name: 'Rcelerate', url: 'https://rcelerate.co' }],
@@ -42,21 +43,12 @@ export const metadata: Metadata = {
     title: 'Rcelerate — Tu negocio en internet en 72 horas',
     description:
       'Páginas web profesionales y automatizaciones con IA para negocios colombianos. Desde $420.000 COP.',
-    images: [
-      {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Rcelerate — Páginas web y automatizaciones para tu negocio',
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Rcelerate — Tu negocio en internet en 72 horas',
     description:
       'Páginas web profesionales y automatizaciones con IA para negocios colombianos.',
-    images: ['/og-image.jpg'],
   },
   robots: {
     index: true,
@@ -67,9 +59,6 @@ export const metadata: Metadata = {
     canonical: 'https://rcelerate.co',
   },
   manifest: '/site.webmanifest',
-  verification: {
-    google: 'REEMPLAZAR_CON_TU_GOOGLE_SITE_VERIFICATION',
-  },
 }
 
 const jsonLdOrganization = {
@@ -128,9 +117,48 @@ const jsonLdWebsite = {
   url: 'https://rcelerate.co',
 }
 
+const jsonLdFAQ = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: '¿Cuánto cuesta hacer una página web profesional en Colombia?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'En Rcelerate, las páginas web profesionales para negocios colombianos comienzan desde $420.000 COP con nuestra oferta de lanzamiento. Incluyen diseño personalizado, SEO, botón de WhatsApp y se entregan en 72 horas.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Cuánto tiempo tarda en estar lista mi página web?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Entregamos la primera versión de tu página web en 72 horas (3 días hábiles). Primero hacemos un borrador para que lo apruebes, y si te gusta acordamos el pago inicial.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Puedo ver el diseño antes de pagar?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Sí. En Rcelerate te mostramos un borrador real de tu página antes de que pagues. Si el diseño te convence, acordamos el pago inicial. Sin riesgo para ti.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Qué incluye una página web profesional de Rcelerate?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Diseño personalizado con tu identidad de marca, optimización SEO para aparecer en Google, botón directo a WhatsApp, versión perfecta en celular y computador, y analytics para ver cuántas personas visitan tu sitio.',
+      },
+    },
+  ],
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${inter.variable} antialiased`}>
+    <html lang="es-CO" className={`${inter.variable} antialiased`}>
       <head>
         <script
           type="application/ld+json"
@@ -139,6 +167,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdWebsite) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFAQ) }}
         />
       </head>
       <body className="min-h-full flex flex-col">
