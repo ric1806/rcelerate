@@ -133,11 +133,14 @@ export async function POST(req: NextRequest) {
     })
 
     // Gemini requires history to start with 'user' — skip leading assistant messages
-    const rawHistory = messages.slice(0, -1).map((m: { role: string; text: string }) => ({
-      role: m.role === 'user' ? 'user' : 'model',
-      parts: [{ text: m.text }],
-    }))
-    const firstUserIdx = rawHistory.findIndex((m) => m.role === 'user')
+    type HistoryEntry = { role: 'user' | 'model'; parts: { text: string }[] }
+    const rawHistory: HistoryEntry[] = messages
+      .slice(0, -1)
+      .map((m: { role: string; text: string }): HistoryEntry => ({
+        role: m.role === 'user' ? 'user' : 'model',
+        parts: [{ text: m.text }],
+      }))
+    const firstUserIdx = rawHistory.findIndex((m: HistoryEntry) => m.role === 'user')
     const history = firstUserIdx >= 0 ? rawHistory.slice(firstUserIdx) : []
 
     const chat = model.startChat({ history })
