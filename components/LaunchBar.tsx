@@ -1,4 +1,12 @@
+'use client'
+
+import { usePathname } from 'next/navigation'
+import { LEGAL_ROUTES } from '@/lib/constants'
+
 export function LaunchBar() {
+  const pathname = usePathname()
+  if (LEGAL_ROUTES.some((r) => pathname?.startsWith(r))) return null
+
   return (
     <div className="sticky top-0 z-50 bg-[#ff4d00] py-2 px-6 flex items-center justify-center gap-2.5 flex-wrap">
       <span className="pulse-badge bg-white/20 rounded px-2.5 py-0.5 text-[11px] text-white font-bold tracking-widest">

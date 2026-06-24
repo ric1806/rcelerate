@@ -1,20 +1,23 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import Image from 'next/image'
-import { WA } from '@/lib/constants'
+import { WA, LEGAL_ROUTES } from '@/lib/constants'
 import { Menu, X } from 'lucide-react'
 
 const links = [
-  { href: '#servicios', label: 'Servicios' },
-  { href: '#portafolio', label: 'Ejemplos' },
-  { href: '#proceso', label: 'Proceso' },
-  { href: '#contacto', label: 'Contacto' },
+  { href: '/#servicios', label: 'Servicios' },
+  { href: '/#portafolio', label: 'Ejemplos' },
+  { href: '/#proceso', label: 'Proceso' },
+  { href: '/#contacto', label: 'Contacto' },
 ]
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+  const isLegal = LEGAL_ROUTES.some((r) => pathname?.startsWith(r))
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -24,7 +27,7 @@ export function Navbar() {
 
   return (
     <nav
-      className={`sticky top-8 z-40 flex items-center justify-between px-6 py-3 border-b transition-all duration-300 ${
+      className={`sticky ${isLegal ? 'top-0' : 'top-8'} z-40 flex items-center justify-between px-6 py-3 border-b transition-all duration-300 ${
         scrolled
           ? 'bg-white/90 backdrop-blur-md border-[#e8e8e8] shadow-sm'
           : 'bg-white border-[#f0f0f0]'

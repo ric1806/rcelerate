@@ -12,7 +12,7 @@ SOBRE RCELERATE
 - Entregamos en 72 horas (días hábiles)
 - El cliente ve un borrador ANTES de pagar — sin riesgo
 - WhatsApp: +57 321 252 0391
-- Correo: richarflorez18@gmail.com
+- Correo: ricardomflorez18@gmail.com
 
 ═══════════════════════════════════════
 PROPUESTA ÚNICA — DEMO DESDE INSTAGRAM

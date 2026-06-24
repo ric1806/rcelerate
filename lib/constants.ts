@@ -10,6 +10,9 @@ export const SCHEDULE_CTA = 'Lun–Sáb 8am–6pm'
 export const LOCATION = 'Colombia'
 export const COPYRIGHT = '© 2026 Rcelerate · Todos los derechos reservados · Colombia'
 
+// Rutas legales: no muestran la barra de oferta y el navbar va pegado arriba
+export const LEGAL_ROUTES = ['/terminos', '/privacidad', '/cookies', '/aviso-legal']
+
 const BASE_WA = `https://wa.me/${WHATSAPP_NUMBER}`
 
 export const WA = {

@@ -32,7 +32,7 @@ export function Footer() {
               'Servicio personalizado',
             ].map((s) => (
               <li key={s}>
-                <a href="#servicios" className="text-[11px] text-[#888] hover:text-[#555] transition-colors">
+                <a href="/#servicios" className="text-[11px] text-[#888] hover:text-[#555] transition-colors">
                   {s}
                 </a>
               </li>
