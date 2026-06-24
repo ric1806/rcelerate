@@ -156,8 +156,8 @@ export function ChatBot() {
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label="Abrir chat"
-        className="fixed bottom-4 right-4 z-50 w-12 h-12 rounded-full bg-red-600 shadow-lg flex items-center justify-center hover:bg-red-700 transition-colors"
-        style={{ boxShadow: '0 0 20px rgba(220,38,38,0.4)' }}
+        className="fixed bottom-4 right-4 z-50 w-12 h-12 rounded-full bg-blue-600 shadow-lg flex items-center justify-center hover:bg-blue-700 transition-colors"
+        style={{ boxShadow: '0 0 20px rgba(37,99,235,0.4)' }}
       >
         {open ? <X size={20} className="text-white" /> : <MessageCircle size={20} className="text-white" />}
       </button>
