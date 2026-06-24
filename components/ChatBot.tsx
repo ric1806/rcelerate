@@ -54,7 +54,10 @@ export function ChatBot() {
         body: JSON.stringify({ messages: next }),
       })
       const data = await res.json()
-      setMessages([...next, { role: 'assistant', text: data.text ?? data.error ?? 'Error al responder.' }])
+      const reply = data.error === 'retry_exhausted'
+        ? 'El servicio está con mucha demanda ahora mismo. Intenta de nuevo en unos segundos 🙏'
+        : (data.text ?? 'Error al responder.')
+      setMessages([...next, { role: 'assistant', text: reply }])
     } catch {
       setMessages([...next, { role: 'assistant', text: 'Hubo un problema de conexión. Intenta de nuevo.' }])
     } finally {
@@ -98,8 +101,9 @@ export function ChatBot() {
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-[#1a1a1a] rounded-xl rounded-bl-sm px-3 py-2">
-                  <Loader2 size={14} className="text-[#ff4d00] animate-spin" />
+                <div className="bg-[#1a1a1a] text-[#888] rounded-xl rounded-bl-sm px-3 py-2 text-[13px] flex items-center gap-2">
+                  <Loader2 size={12} className="text-[#ff4d00] animate-spin flex-shrink-0" />
+                  Procesando<span className="animate-pulse">...</span>
                 </div>
               </div>
             )}

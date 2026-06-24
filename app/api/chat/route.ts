@@ -118,6 +118,25 @@ CÓMO RESPONDER
 - NO inventes servicios que no están en esta lista
 - Responde SIEMPRE en español`
 
+// Retry con backoff exponencial para errores 503 de alta demanda
+async function callWithRetry(fn: () => Promise<string>): Promise<string> {
+  const waits = [1000, 2000, 4000, 8000] // 1s → 2s → 4s → 8s
+  let lastErr: unknown
+
+  for (let i = 0; i <= waits.length; i++) {
+    try {
+      return await fn()
+    } catch (err: unknown) {
+      lastErr = err
+      const msg = err instanceof Error ? err.message : String(err)
+      const is503 = msg.includes('503') || msg.includes('high demand') || msg.includes('Service Unavailable')
+      if (!is503 || i === waits.length) throw err
+      await new Promise(r => setTimeout(r, waits[i]))
+    }
+  }
+  throw lastErr
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { messages } = await req.json()
@@ -132,7 +151,6 @@ export async function POST(req: NextRequest) {
       systemInstruction: SYSTEM_PROMPT,
     })
 
-    // Gemini requires history to start with 'user' — skip leading assistant messages
     type HistoryEntry = { role: 'user' | 'model'; parts: { text: string }[] }
     const rawHistory: HistoryEntry[] = messages
       .slice(0, -1)
@@ -145,12 +163,19 @@ export async function POST(req: NextRequest) {
 
     const chat = model.startChat({ history })
     const lastMessage = messages[messages.length - 1].text
-    const result = await chat.sendMessage(lastMessage)
-    const text = result.response.text()
+
+    const text = await callWithRetry(() =>
+      chat.sendMessage(lastMessage).then(r => r.response.text())
+    )
 
     return NextResponse.json({ text })
-  } catch (err) {
-    console.error('Chat error:', err)
-    return NextResponse.json({ error: 'Error al procesar tu mensaje' }, { status: 500 })
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    const is503 = msg.includes('503') || msg.includes('high demand')
+    console.error('Chat error:', msg)
+    return NextResponse.json(
+      { error: is503 ? 'retry_exhausted' : 'Error al procesar tu mensaje' },
+      { status: 500 }
+    )
   }
 }
