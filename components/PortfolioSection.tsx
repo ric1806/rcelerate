@@ -1,4 +1,31 @@
-const profesionales = [
+interface ProItem {
+  icon: string
+  name: string
+  desc: string
+  tags: string[]
+  time: string | null
+  url: string
+  featured?: boolean
+}
+
+interface DemoItem {
+  icon: string
+  name: string
+  desc: string
+  tags: string[]
+  url: string
+}
+
+const profesionales: ProItem[] = [
+  {
+    icon: '🏛️',
+    name: 'KYMARQ',
+    desc: 'Sitio web premium para empresa de arquitectura y diseño. Identidad visual de alto impacto, galería de proyectos y experiencia de usuario de lujo.',
+    tags: ['Arquitectura', 'Premium'],
+    time: null,
+    url: 'https://kymarq.com',
+    featured: true,
+  },
   {
     icon: '⚖️',
     name: 'Bufete López Correal & Asociados',
@@ -17,7 +44,7 @@ const profesionales = [
   },
 ]
 
-const demos = [
+const demos: DemoItem[] = [
   {
     icon: '🍦',
     name: 'Kreems Churros & Helado',
@@ -48,14 +75,24 @@ const demos = [
   },
 ]
 
-function ProCard({ c }: { c: typeof profesionales[0] }) {
+function ProCard({ c }: { c: ProItem }) {
   return (
-    <div className="flex gap-4 py-4 border-b border-[#f8f8f8] last:border-0 items-start">
+    <div className={`relative flex gap-4 py-4 border-b border-[#f8f8f8] last:border-0 items-start ${c.featured ? 'pl-3' : ''}`}>
+      {c.featured && (
+        <div className="absolute left-0 top-3 bottom-3 w-0.5 bg-[#ff4d00] rounded-full" />
+      )}
       <div className="w-11 h-11 bg-[#f5f5f5] rounded-lg flex items-center justify-center text-xl flex-shrink-0">
         {c.icon}
       </div>
       <div className="flex-1">
-        <h4 className="text-[13px] font-medium text-[#111] mb-0.5">{c.name}</h4>
+        <div className="flex items-center gap-2 mb-0.5">
+          <h4 className="text-[13px] font-medium text-[#111]">{c.name}</h4>
+          {c.featured && (
+            <span className="text-[9px] bg-[#fff0eb] text-[#ff4d00] px-1.5 py-0.5 rounded-full font-semibold tracking-wide">
+              ✦ DESTACADO
+            </span>
+          )}
+        </div>
         <p className="text-[12px] text-[#777] leading-snug mb-1.5">{c.desc}</p>
         <div className="flex gap-1.5 flex-wrap items-center">
           {c.tags.map((t) => (
@@ -80,7 +117,7 @@ function ProCard({ c }: { c: typeof profesionales[0] }) {
   )
 }
 
-function DemoCard({ c }: { c: typeof demos[0] }) {
+function DemoCard({ c }: { c: DemoItem }) {
   return (
     <div className="bg-[#fafafa] border border-[#efefef] rounded-xl p-3.5">
       <div className="w-9 h-9 bg-white border border-[#efefef] rounded-lg flex items-center justify-center text-lg mb-2.5">
