@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { MessageCircle, X, Send, Loader2, Bot, ExternalLink } from 'lucide-react'
+import { MessageCircle, X, Send, Loader2, Bot } from 'lucide-react'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -13,34 +13,28 @@ const GREETING: Message = {
   text: '¡Hola! Soy Rcel 👋 tu asistente de IA disponible 24/7. ¿En qué te puedo ayudar hoy? Puedo contarte sobre nuestras páginas web, precios o automatizaciones con IA.',
 }
 
-const PORTFOLIO_EXAMPLES = [
-  { name: 'KYMARQ', desc: 'Arquitectura & diseño premium', url: 'https://kymarq.com', icon: '🏛️' },
-  { name: 'Bufete López Correal', desc: 'Bufete de abogados · Colombia', url: 'https://lopez-correal-asociados.vercel.app/', icon: '⚖️' },
-  { name: 'Kreems Churros & Helado', desc: 'Negocio de alimentos · Demo', url: 'https://kreemschurroshelado.vercel.app', icon: '🍦' },
-  { name: 'OtraVibra', desc: 'Entretenimiento y música · Demo', url: 'https://otravibraco.vercel.app', icon: '🎵' },
-]
-
 export function ChatBot() {
-  const [widgetOpen, setWidgetOpen] = useState(true)
-  const [messages, setMessages] = useState<Message[]>([])
+  const [open, setOpen] = useState(true)
+  const [messages, setMessages] = useState<Message[]>([GREETING])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    if (widgetOpen) {
+    if (open) {
       bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+      inputRef.current?.focus()
     }
-  }, [widgetOpen, messages])
+  }, [open, messages])
 
   async function send() {
     const text = input.trim()
     if (!text || loading) return
 
     const userMsg: Message = { role: 'user', text }
-    const history = [GREETING, ...messages, userMsg]
-    setMessages((prev) => [...prev, userMsg])
+    const next = [...messages, userMsg]
+    setMessages(next)
     setInput('')
     setLoading(true)
 
@@ -48,15 +42,15 @@ export function ChatBot() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: history }),
+        body: JSON.stringify({ messages: next }),
       })
       const data = await res.json()
       const reply = data.error === 'retry_exhausted'
         ? 'El servicio está con mucha demanda ahora mismo. Intenta de nuevo en unos segundos 🙏'
         : (data.text ?? 'Error al responder.')
-      setMessages((prev) => [...prev, { role: 'assistant', text: reply }])
+      setMessages([...next, { role: 'assistant', text: reply }])
     } catch {
-      setMessages((prev) => [...prev, { role: 'assistant', text: 'Hubo un problema de conexión. Intenta de nuevo.' }])
+      setMessages([...next, { role: 'assistant', text: 'Hubo un problema de conexión. Intenta de nuevo.' }])
     } finally {
       setLoading(false)
     }
@@ -64,10 +58,11 @@ export function ChatBot() {
 
   return (
     <>
-      {widgetOpen && (
+      {/* Panel del chat */}
+      {open && (
         <div
           className="fixed bottom-24 right-4 z-[60] w-[340px] max-w-[calc(100vw-2rem)] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-[#222]"
-          style={{ background: '#0e0e0f', maxHeight: '520px' }}
+          style={{ background: '#0e0e0f', maxHeight: '480px' }}
         >
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#ff4d00] to-[#ff6a2a]">
@@ -86,55 +81,13 @@ export function ChatBot() {
                 </p>
               </div>
             </div>
-            <button
-              onClick={() => setWidgetOpen(false)}
-              className="text-white/80 hover:text-white transition-colors"
-              aria-label="Cerrar"
-            >
+            <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white transition-colors">
               <X size={16} />
             </button>
           </div>
 
-          {/* Cuerpo scrollable */}
-          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3" style={{ minHeight: 0 }}>
-            {/* Ejemplos del portafolio */}
-            <p className="text-[#555] text-[10px] uppercase tracking-widest font-semibold">
-              Trabajos recientes
-            </p>
-            <div className="space-y-1.5">
-              {PORTFOLIO_EXAMPLES.map((ex) => (
-                <a
-                  key={ex.name}
-                  href={ex.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 bg-[#161616] hover:bg-[#1e1e1e] transition-colors rounded-xl px-3 py-2.5 group"
-                >
-                  <span className="text-base leading-none">{ex.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-white text-[12px] font-semibold leading-none mb-0.5 truncate">{ex.name}</p>
-                    <p className="text-[#555] text-[10.5px] truncate">{ex.desc}</p>
-                  </div>
-                  <ExternalLink size={11} className="text-[#444] group-hover:text-[#ff4d00] transition-colors flex-shrink-0" />
-                </a>
-              ))}
-            </div>
-
-            {/* Separador hacia el chat */}
-            <div className="flex items-center gap-2 pt-1">
-              <div className="flex-1 h-px bg-[#222]" />
-              <span className="text-[#444] text-[10px]">pregúntame</span>
-              <div className="flex-1 h-px bg-[#222]" />
-            </div>
-
-            {/* Saludo del asistente */}
-            <div className="flex justify-start">
-              <div className="bg-[#1a1a1a] text-[#ccc] rounded-xl rounded-bl-sm px-3 py-2 text-[13px] leading-relaxed max-w-[85%] whitespace-pre-wrap">
-                {GREETING.text}
-              </div>
-            </div>
-
-            {/* Mensajes de la conversación */}
+          {/* Mensajes */}
+          <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3" style={{ minHeight: 0 }}>
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
@@ -148,7 +101,6 @@ export function ChatBot() {
                 </div>
               </div>
             ))}
-
             {loading && (
               <div className="flex justify-start">
                 <div className="bg-[#1a1a1a] text-[#888] rounded-xl rounded-bl-sm px-3 py-2 text-[13px] flex items-center gap-2">
@@ -160,7 +112,7 @@ export function ChatBot() {
             <div ref={bottomRef} />
           </div>
 
-          {/* Input del chat */}
+          {/* Input */}
           <div className="flex items-center gap-2 px-3 py-2 border-t border-[#222] bg-[#111]">
             <input
               ref={inputRef}
@@ -182,18 +134,15 @@ export function ChatBot() {
         </div>
       )}
 
-      {/* Botón flotante — siempre visible */}
+      {/* Botón flotante */}
       <div className="fixed bottom-4 right-4 z-[60]">
         <button
-          onClick={() => setWidgetOpen((v) => !v)}
-          aria-label={widgetOpen ? 'Cerrar chat' : 'Abrir chat'}
+          onClick={() => setOpen((v) => !v)}
+          aria-label={open ? 'Cerrar chat' : 'Abrir chat'}
           className="w-14 h-14 rounded-full bg-[#ff4d00] shadow-lg flex items-center justify-center hover:bg-[#e04400] transition-colors"
           style={{ boxShadow: '0 0 20px rgba(255,77,0,0.4)' }}
         >
-          {widgetOpen
-            ? <X size={24} className="text-white" />
-            : <MessageCircle size={24} className="text-white" />
-          }
+          {open ? <X size={24} className="text-white" /> : <MessageCircle size={24} className="text-white" />}
         </button>
       </div>
     </>
