@@ -22,7 +22,7 @@ const PORTFOLIO_EXAMPLES = [
 
 export function ChatBot() {
   const [widgetOpen, setWidgetOpen] = useState(true)
-  const [view, setView] = useState<'home' | 'chat'>('home')
+  const [view, setView] = useState<'home' | 'chat'>('chat')
   const [messages, setMessages] = useState<Message[]>([GREETING])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
